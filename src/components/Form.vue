@@ -5,7 +5,7 @@
   <div class="outer-container">
     <div class="form-container">
         <q-input v-model="nam" label="Name"></q-input>
-         <q-btn-dropdown class="race" color="primary" v-bind:label="this.race || 'Select race'">
+         <q-btn-dropdown class="race-dropdown" color="primary" v-bind:label="this.race || 'Select race'">
             <q-list>
                 <q-item @click="onRaceClick(race)" v-bind:key="race.id" v-for="race in raceData" clickable v-close-popup>
                     <q-item-section>
@@ -19,15 +19,15 @@
             <label>Autofarm</label>
             <q-checkbox left-label v-model="autofarm" />
         </div>
-        <div class="q-pa power">
+        <div class="q-pa slider">
             <label>Power ({{ power/100 }})</label>
             <q-slider v-model="power" :min="0" :max="10000"/>
         </div>
-        <div v-if="shouldDisplayMagicLevel()" class="q-pa power">
+        <div v-if="shouldDisplayMagicLevel()" class="q-pa slider">
             <label>Magic level ({{ magicLevel }})</label>
             <q-slider :step="1" v-model="magicLevel" :min="0" :max="100"/>
         </div>
-        <div  v-if="shouldDisplayGreedLevel()" class="q-pa power">
+        <div  v-if="shouldDisplayGreedLevel()" class="q-pa slider">
             <label>Greed level ({{ greedLevel }})</label>
             <q-slider :step="1" v-model="greedLevel" :min="0" :max="100"/>
         </div>
@@ -127,14 +127,15 @@ export default defineComponent({
     .height {
         margin-top:20px
     }
-    .race {
+    .race-dropdown {
         margin-top:20px
     }
-    .power {
+    .slider {
         margin-top:20px;
     }
     .form-container {
         width:50vw;
+        min-width: 350px;
     }
     .outer-container {
         display: flex;
@@ -153,7 +154,7 @@ export default defineComponent({
         display: flex;
         justify-content: center;
     }
-    .race {
+    .race-dropdown {
         margin-top:20px;
     }
 </style>
