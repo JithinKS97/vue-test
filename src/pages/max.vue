@@ -22,7 +22,10 @@ export default defineComponent({
      fetch('https://mocki.io/v1/ac05988f-e2e5-42f9-8088-9da6979926e3')
       .then(async response => {
         this.characterData = await response.json()
-      })
+      }).catch(err=>{
+        consoole.log(err)
+        alert("error while fetching data from API")
+      }) 
   },
   props: {
     data: {
