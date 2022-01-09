@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+    <q-header class="header" elevated>
       <q-toolbar class="toolbar">
         <div toolbar-container>
           <router-link to="/">
@@ -15,7 +15,7 @@
         </div>
       </q-toolbar>
     </q-header>
-    <q-page-container>
+    <q-page-container class="container">
       <router-view />
     </q-page-container>
   </q-layout>
@@ -47,10 +47,22 @@ export default defineComponent({
     display: flex;
     justify-content: center;
   }
+  .header {
+    width: 70vw;
+    min-width: 500px;
+    margin:auto;
+  }
   .toolbar button {
     margin-left: 20px;
   }
   .toolbar a {
     text-decoration: none;
+  }
+  .container {
+    background-color: white;
+    filter: drop-shadow(0 -6mm 4mm grey);
+    width: 70vw;
+    min-width: 500px;
+    margin: auto;
   }
 </style>
