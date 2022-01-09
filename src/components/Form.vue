@@ -45,10 +45,10 @@ import { saveYamlFile } from "../helpers/yaml"
 export default defineComponent({
   data() {
       return {
-          power:5000,
-          autofarm:true,
-          magicLevel:25,
-          greedLevel:25,
+          power:0,
+          autofarm:false,
+          magicLevel:0,
+          greedLevel:0,
           nam:"",
           race:"",
           height:"",
@@ -82,13 +82,13 @@ export default defineComponent({
     },
     generateYaml: function() {
         const jsonObject = {
-            power: this.power/100,
+            power: Number(this.power/100),
             autofarm: this.autofarm,
-            "magic-level": this.shouldDisplayMagicLevel()?this.magicLevel:null,
-            "greed-level": this.shouldDisplayGreedLevel()?this.greedLevel:null,
+            "magic-level": this.shouldDisplayMagicLevel()?Number(this.magicLevel):null,
+            "greed-level": this.shouldDisplayGreedLevel()?Number(this.greedLevel):null,
             name: this.nam,
             race: this.race,
-            height: this.height
+            height: Number(this.height)
         }
         saveYamlFile(jsonObject)
     },
@@ -143,6 +143,7 @@ export default defineComponent({
     .title {
         display: flex;
         justify-content: center;
+        font-weight: bold;
     }
     .autofarm {
         margin-top:20px;

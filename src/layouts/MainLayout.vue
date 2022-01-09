@@ -6,11 +6,11 @@
           <router-link to="/">
             <q-btn color="secondary">Home</q-btn>
           </router-link>
-          <router-link to="/kleed">
-            <q-btn color="secondary">Kleed</q-btn>
-          </router-link>
           <router-link to="/max">
             <q-btn color="secondary">Max</q-btn>
+          </router-link>
+          <router-link to="/kleed">
+            <q-btn color="secondary">Kleed</q-btn>
           </router-link>
         </div>
       </q-toolbar>
