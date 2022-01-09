@@ -1,17 +1,13 @@
 <template>
-  <q-page>
-    <Form title="Home"/>
+  <q-page class="flex flex-center">
+    
   </q-page>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
-import Form from '../components/Form'
 
 export default defineComponent({
-  name: 'PageHome',
-  components: {
-    Form
-  },
+  name: 'PageIndex'
 })
 </script>
