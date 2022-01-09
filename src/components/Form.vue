@@ -7,7 +7,7 @@
         <q-input v-model="nam" label="Name"></q-input>
          <q-btn-dropdown class="race" color="primary" v-bind:label="this.race || 'Select race'">
             <q-list>
-                <q-item @click="onItemClick(race)" v-bind:key="race.id" v-for="race in raceData" clickable v-close-popup>
+                <q-item @click="onRaceClick(race)" v-bind:key="race.id" v-for="race in raceData" clickable v-close-popup>
                     <q-item-section>
                         <q-item-label>{{race.id}}</q-item-label>
                     </q-item-section>
@@ -32,7 +32,7 @@
             <q-slider :step="1" v-model="greedLevel" :min="0" :max="100"/>
         </div>
         <div class="submit-button">
-            <q-btn v-on:click="get" color="secondary">Download YAML</q-btn>
+            <q-btn v-on:click="generateYaml" color="secondary">Download YAML</q-btn>
         </div>
     </div>
   </div>
@@ -40,12 +40,9 @@
 
 <script>
 import { defineComponent } from 'vue'
-import { exportFile } from 'fs-browsers';
-
-const YAML = require('yaml');
+import { saveYamlFile } from "../helpers/yaml"
 
 export default defineComponent({
-  name: 'EssentialLink',
   data() {
       return {
           power:5000,
@@ -83,30 +80,19 @@ export default defineComponent({
         } 
         return true;
     },
-    get: function() {
+    generateYaml: function() {
         const jsonObject = {
             power: this.power/100,
             autofarm: this.autofarm,
-            "magic-level": this.magicLevel,
-            "greed-level": this.greedLevel,
+            "magic-level": this.shouldDisplayMagicLevel()?this.magicLevel:null,
+            "greed-level": this.shouldDisplayGreedLevel()?this.greedLevel:null,
             name: this.nam,
             race: this.race,
             height: this.height
         }
-
-        if(!this.shouldDisplayMagicLevel()) {
-            jsonObject["magic-level"] = null;
-        }
-
-         if(!this.shouldDisplayGreedLevel()) {
-            jsonObject["greed-level"] = null;
-        }
-
-        const doc = new YAML.Document();
-        doc.contents = jsonObject;
-        exportFile(doc.toString(), { fileName:"character.yaml" });
+        saveYamlFile(jsonObject)
     },
-    onItemClick(e) {
+    onRaceClick(e) {
         this.race = e.id
     }
   },
