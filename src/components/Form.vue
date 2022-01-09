@@ -5,8 +5,16 @@
   <div class="outer-container">
     <div class="form-container">
         <q-input v-model="nam" label="Name"></q-input>
-        <q-input v-model="race" class="race" label="Race"></q-input>
-        <q-input v-model="height" class="height" label="Height"></q-input>
+         <q-btn-dropdown class="race" color="primary" v-bind:label="this.race || 'Select race'">
+            <q-list>
+                <q-item @click="onItemClick(race)" v-bind:key="race.id" v-for="race in raceData" clickable v-close-popup>
+                    <q-item-section>
+                        <q-item-label>{{race.id}}</q-item-label>
+                    </q-item-section>
+                </q-item>
+            </q-list>
+        </q-btn-dropdown>
+        <q-input type="number" v-model="height" class="height" label="Height"></q-input>
         <div class="autofarm">
             <label>Autofarm</label>
             <q-checkbox left-label v-model="autofarm" />
@@ -15,11 +23,11 @@
             <label>Power ({{ power/100 }})</label>
             <q-slider v-model="power" :min="0" :max="10000"/>
         </div>
-        <div v-if="magicLevel!=null" class="q-pa power">
+        <div v-if="shouldDisplayMagicLevel()" class="q-pa power">
             <label>Magic level ({{ magicLevel }})</label>
             <q-slider :step="1" v-model="magicLevel" :min="0" :max="100"/>
         </div>
-        <div v-if="greedLevel!=null" class="q-pa power">
+        <div  v-if="shouldDisplayGreedLevel()" class="q-pa power">
             <label>Greed level ({{ greedLevel }})</label>
             <q-slider :step="1" v-model="greedLevel" :min="0" :max="100"/>
         </div>
@@ -46,7 +54,8 @@ export default defineComponent({
           greedLevel:25,
           nam:"",
           race:"",
-          height:""
+          height:"",
+          raceData:[]
       }
   },
    props: {
@@ -60,6 +69,20 @@ export default defineComponent({
     }
   },
   methods: {
+    shouldDisplayMagicLevel() {
+        const race = this.raceData.find(datum => datum.id === this.race);
+        if(race) {
+            return race['hasMagic']
+        }
+        return true;
+    },
+    shouldDisplayGreedLevel() {
+        const race = this.raceData.find(datum => datum.id === this.race);
+        if(race) {
+            return race['hasGreed']
+        } 
+        return true;
+    },
     get: function() {
         const jsonObject = {
             power: this.power/100,
@@ -70,21 +93,46 @@ export default defineComponent({
             race: this.race,
             height: this.height
         }
+
+        if(!this.shouldDisplayMagicLevel()) {
+            jsonObject["magic-level"] = null;
+        }
+
+         if(!this.shouldDisplayGreedLevel()) {
+            jsonObject["greed-level"] = null;
+        }
+
         const doc = new YAML.Document();
         doc.contents = jsonObject;
         exportFile(doc.toString(), { fileName:"character.yaml" });
+    },
+    onItemClick(e) {
+        this.race = e.id
     }
   },
   watch: {
       characterData() {
-          this.race = this.characterData[0].value
-          this.height = this.characterData[1].value
-          this.nam = this.characterData[2].value
-          this.power = this.characterData[3].value * 100
-          this.autofarm = this.characterData[4].value
-          this.magicLevel = this.characterData[5].value
-          this.greedLevel = this.characterData[6].value
+          const data = {}
+
+          for(let i=0;i<this.characterData.length;i++) {
+              data[this.characterData[i]["id"]] = this.characterData[i]["value"];
+          }
+
+          this.race = data['race']
+          this.height = data['height']
+          this.nam = data['name']
+          this.power = data['power'] * 100
+          this.autofarm = data['autofarm']
+          this.magicLevel = data['magic-level']
+          this.greedLevel = data['greed-level']
       }
+  },
+  mounted() {
+      fetch("https://mocki.io/v1/b02d1de0-a465-4475-9ebb-94e8118c3757").then(async (res)=>{
+        const raceData = await res.json();
+        this.raceData = raceData
+        console.log(this.raceData)
+      })
   }
 })
 </script>
@@ -117,5 +165,8 @@ export default defineComponent({
         margin-top:30px;
         display: flex;
         justify-content: center;
+    }
+    .race {
+        margin-top:20px;
     }
 </style>
